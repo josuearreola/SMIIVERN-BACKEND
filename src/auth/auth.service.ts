@@ -17,7 +17,7 @@ export class AuthService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async register(registerDto: RegisterDto) {
     const existingUser = await this.userRepository.findOne({
@@ -60,12 +60,12 @@ export class AuthService {
     if (!isMatch) {
       // Incrementar intentos fallidos
       const nuevosIntentos = user.intentos + 1;
-      
+
       if (nuevosIntentos >= 3) {
         // Bloquear la cuenta después del 3er intento fallido
-        await this.userRepository.update(user.id, { 
+        await this.userRepository.update(user.id, {
           intentos: nuevosIntentos,
-          activo: false 
+          activo: false,
         });
         throw new UnauthorizedException(
           'Cuenta bloqueada por múltiples intentos fallidos. Contacte al administrador.',
@@ -76,12 +76,12 @@ export class AuthService {
         throw new BadRequestException('Credenciales inválidas');
       }
     }
-    
+
     // Login exitoso: resetear intentos fallidos
     if (user.intentos > 0) {
       await this.userRepository.update(user.id, { intentos: 0 });
     }
-    
+
     return user;
   }
   async login(user: User) {
