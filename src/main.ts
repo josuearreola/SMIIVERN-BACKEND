@@ -9,8 +9,17 @@ async function bootstrap() {
 
   app.use(bodyParser.urlencoded({ extended: true })); // Nuevo: Para aceptar formularios
 
-  // Validación global
-  app.useGlobalPipes(new ValidationPipe());
+  // Validación global estricta para proteger la API de payloads inválidos.
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: false,
+      },
+    }),
+  );
   app.enableCors({
     origin: ['https://smiivern-frontend.vercel.app', 'http://localhost:4200'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
